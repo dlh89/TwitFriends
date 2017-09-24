@@ -1,7 +1,7 @@
 {
-  "name": "express_ajax",
+  "name": "TwitFriends",
   "version": "1.0.0",
-  "description": "Test using Express and ajax",
+  "description": "A web application which generates quizzes based on twitter user's friends",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

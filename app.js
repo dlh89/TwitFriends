@@ -39,82 +39,10 @@ app.get('/', function(req, res, next){
 
 app.get('/quiz', function(req, res, next) {
     var playerHandle = req.query.playerHandle;
-    // asynchronous api call
-    T.get('friends/ids', { screen_name: playerHandle }, function (err, data) {
-        var friends = data.ids;
-        cbFollowers(friends)
-    });
-
-    // callback function executed once friends are retrieved
-    function cbFollowers(friends){
-        T.get('followers/ids', { screen_name: playerHandle }, function (err, data) {
-            var followers = data.ids;
-            var mutualFollowers = [];
-
-            var mutualFollowerCount = 0;
-            followers.forEach(function(follower){
-                if(friends.includes(follower)){
-                    mutualFollowerCount ++;
-                    mutualFollowers.push(follower)
-                }
-            });
-            console.log("Mutual followers: " + mutualFollowerCount);
-            console.log(mutualFollowers);
-            cbGetNames(mutualFollowers)
-        })
-    }
-
-    // go through list of mutual followers and lookup their name from twitter, adding it to friendNames list
-    function cbGetNames(mutualFollowers) {
-        var questionLength = mutualFollowers.length;
-        console.log(questionLength);
-        var friendNames = [];
-        mutualFollowers.forEach(function(mutual){
-            var params = {
-                user_id: mutual,
-                include_entities: false
-            };
-            T.get('users/lookup', params, function (err, data) {
-                // if the user lookup returns no data then this friend cannot be used so decrement the questionsLength
-                if(data[0]){
-                    friendNames.push(data[0].screen_name);
-                    console.log(data[0].screen_name)
-                } else {
-                    questionLength--
-                }
-
-                // check if forEach has finished
-                if(friendNames.length == questionLength){
-                    console.log(friendNames);
-                    cbGenerateAnswers(friendNames)
-                }
-            });
-
-        });
-    }
-
-    function cbGenerateAnswers(friendNames){
-        // generate random number in range friendNames length
-        // answers[1] = name etc
-        // assign that name as answer to question
-        var possibleAnswers = friendNames.slice();  // make a copy the friendNames array
-        var answers = {};
-        var questionNum = 1;
-
-        friendNames.forEach(function(){
-            var randomNum = Math.floor((Math.random() * possibleAnswers.length));
-            answers[questionNum] = possibleAnswers[randomNum];  // add random friend to answers object with question num
-            possibleAnswers.splice(randomNum, 1);  // remove 1 item at the index of randomNum
-            questionNum++;
-        });
-
-        console.log(answers)
-
-        res.render('quiz', {friend_names: friendNames, answers: answers});
-    }
+    res.render('quiz', {player_handle: playerHandle});
 });
 
-app.get("/friends", function(req, res, next){
+app.get('/friends', function(req, res, next){
     var playerHandle = req.query.playerHandle;
     // Twit api call to get friends
     T.get('friends/ids', { screen_name: playerHandle }, function (err, data) {
@@ -135,8 +63,6 @@ app.get("/friends", function(req, res, next){
                     mutualFollowers.push(follower)
                 }
             });
-            console.log("Mutual followers: " + mutualFollowerCount);
-            console.log(mutualFollowers);
             cbGetNames(mutualFollowers)
         })
     }
@@ -155,14 +81,13 @@ app.get("/friends", function(req, res, next){
                 // if the user lookup returns no data then this friend cannot be used so decrement the questionsLength
                 if(data[0]){
                     friendNames.push(data[0].screen_name);
-                    console.log(data[0].screen_name)
                 } else {
                     questionLength--
                 }
 
                 // check if forEach has finished
                 if(friendNames.length == questionLength){
-                    console.log(friendNames);
+                    friendNames.sort();
                     res.send(friendNames)
                 }
             });
@@ -171,19 +96,24 @@ app.get("/friends", function(req, res, next){
     }
 });
 
-app.get("/question", function(req, res, next){
+app.get('/question', function(req, res, next){
     var params = {
         screen_name: req.query.id,  // handle GET parameter
-        count: 9999,
+        count: 999,
         include_rts: false
     };
     // make twitter api call to get text from most recent status for user
     T.get('statuses/user_timeline',params, function(err, data) {
-        tweetLength = data.length;
-        var tweets = data[tweetLength-1].text;
-        console.log(data);
+        var tweetsLength = data.length;
+        // choose a random tweet
+        var randomTweet = Math.floor(Math.random() * tweetsLength);
+        var tweets = data[randomTweet].text;
         res.send(tweets)
     });
+});
+
+app.get('/results', function(req, res, next){
+    res.render('results')
 });
 
 app.listen(port, function(){

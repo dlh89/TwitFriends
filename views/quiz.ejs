@@ -2,9 +2,13 @@
 <div ng-app="myApp" ng-controller="myCtrl">
     <h1>TwitFriends</h1>
     <h3>Quiz</h3>
-    <button type="submit" ng-click="getWords()" ng-hide="gameLive">Start Game</button>
+    <div ng-hide="gameLive || quizFinished">
+        <p>We managed to find profiles for {{ friend_names.length }} people you follow on twitter who also follow you.
+            Congrats! Now let's find out how well you know them.</p>
+        <button type="submit" ng-click="getWords()">Start Game</button>
+    </div>
     <div ng-show="gameLive">
-        <p>Question {{ question }}</p>
+        <p>Question {{ question }} of {{ answers_length }}</p>
         {{ tweet }}
         <br>
         <select ng-model="selectedFriend" ng-options="x for x in friend_names">
@@ -14,33 +18,48 @@
         <br><br>
         <p>Your score: {{ score }}</p>
     </div>
+    <div ng-show="quizFinished">
+        <h1>Results</h1>
+        <p>The results are in! Here's how you did:</p>
+        <h2>{{ score }} out of {{ answers_length }}</h2>
+        <!-- calculate percentage and round to 0 decimal places -->
+        <h3>{{ score / answers_length * 100 | number:0 }}%</h3>
+        <p>How do you feel about your results? Why not tell your friends on Twitter about how well you know them!</p>
+    </div>
 </div>
 
 <script>
     var app = angular.module("myApp", []);
 
     app.controller("myCtrl", function($scope, $http) {
-        $scope.friend_names = <%-JSON.stringify(friend_names)%>
+
+        $scope.playerHandle = <%-JSON.stringify(player_handle)%>
         $scope.question = 0
-        $scope.answers = <%-JSON.stringify(answers)%>
+
+        // fetch player's friends
+        $http.get("/friends", {params: {playerHandle: $scope.playerHandle}})
+                .then(function(response){
+                    $scope.friend_names = response.data;
+                    $scope.answers = generateAnswers($scope.friend_names)
+                    $scope.answers_length = Object.keys($scope.answers).length
+                })
+
         $scope.score = 0
         $scope.gameLive = false
 
-        console.log(Object.keys($scope.answers).length);
-
         $scope.getWords = function() {
-
             // check to see if all question answered
-            if($scope.question == Object.keys($scope.answers).length){
-                //$scope.gameLive = false;
+            if($scope.question == $scope.answers_length){
+                $scope.gameLive = false;
                 console.log("quiz finished");
+                $scope.quizFinished = true;
             } else {
                 $scope.gameLive = true;
                 if($scope.selectedFriend == $scope.answers[$scope.question] && $scope.question > 0){
                     $scope.score++;
                 }
                 // ajax request to make twit api call for friend
-                $http.get("/question?id=" + $scope.answers[$scope.question+1])
+                $http.get("/question", {params: {id: $scope.answers[$scope.question+1]}})
                         .then(function(response) {
                             $scope.tweet = response.data;
                             console.log($scope.tweet)
@@ -48,6 +67,32 @@
                             $scope.question++
                         });
             }
+        }
+
+        function generateAnswers(friend_names){
+            var possible_answers = friend_names.slice();  // make a copy the friendNames array
+            var answers = {};
+            var questionNum = 1;
+
+            if(friend_names.length < 10){
+                friend_names.forEach(function(){
+                    answer()
+                });
+            } else {
+                for(var i = 0; i < 10; i++){
+                    answer()
+                }
+            }
+
+            function answer(){
+                var randomNum = Math.floor((Math.random() * possible_answers.length));
+                answers[questionNum] = possible_answers[randomNum];  // add random friend to answers object with question num
+                possible_answers.splice(randomNum, 1);  // remove 1 item at the index of randomNum
+                questionNum++;
+            }
+
+            console.log(answers)
+            return answers
         }
     });
 </script>

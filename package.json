@@ -1,0 +1,16 @@
+{
+  "name": "express_ajax",
+  "version": "1.0.0",
+  "description": "Test using Express and ajax",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "David Hide",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.1",
+    "ejs": "^2.5.7",
+    "twit": "^2.2.9"
+  }
+}

@@ -4,7 +4,7 @@ var path = require('path');
 var ejs = require('ejs');
 var Twit = require('twit');
 
-var config = require(path.join(__dirname, '/public/js/config'));
+var config = require(path.join(__dirname, 'config'));
 var T = new Twit(config);
 
 var port = 3000;

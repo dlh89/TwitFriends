@@ -24,6 +24,12 @@ app.use(bodyParser.urlencoded({extended: false}));
 // set static path
 app.use(express.static(path.join(__dirname, 'public')));
 
+// bootstrap middleware
+app.use('/bs', express.static(__dirname + '/node_modules/bootstrap/')); // redirect bootstrap JS
+
+// redirect /scripts to node_modules folder
+app.use('/scripts', express.static(__dirname + '/node_modules/'));
+
 // error handling
 app.use(function (err, req, res, next) {
     //console.error(err.stack)

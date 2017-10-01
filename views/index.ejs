@@ -1,12 +1,36 @@
 <% include partials/header %>
-<div>
-    <h1>TwitFriends</h1>
-    <h3>How well do you really know your twitter friends?</h3>
-    <form action="/quiz" method="get">
-        <input type="text" placeholder="Enter your twitter handle" name="playerHandle" >
-        <button type=submit>Start quiz</button>
-    </form>
-    <br><br>
+<div class="wrapper">
+    <div class="container-fluid bg-prim text-center">
+        <div class="container">
+            <h1 class="responsive-large-header">TwitFriends</h1>
+            <h3>How well do you really know your twitter friends?</h3>
+            <br>
+            <form class="form-inline" action="/quiz" method="get">
+                <input type="search" class="form-control input-lg" placeholder="Enter your Twitter handle" name="playerHandle" >
+                <button type=submit class="btn btn-customised btn-lg">Start quiz</button>
+            </form>
+            <br><br>
+        </div>
+    </div>
+    <div class="container-fluid bg-sec text-center">
+        <div class="container">
+            <h2 class="responsive-medium-header">Enter your Twitter handle and test your knowledge of your friends with a unique, randomly generated quiz.</h2>
+            <hr>
+            <h4 class="responsive-small-header">
+                We'll show you tweets from your Twitter friends and it's your job to tell us who wrote them. If you get
+                stuck then you can use one of three lifelines to get some extra information about the person who sent the
+                tweet. Use them wisely!
+            </h4>
+        </div>
+        <div class="container-fluid bg-sec text-center">
+            <div class="container">
+                <h2 class="responsive-medium-header">Tell your friends!</h2>
+                <hr>
+                <h4>
+                    Once you've completed the quiz you can let your friends know how well you did.
+                </h4>
+            </div>
+        </div>
+    </div>
 </div>
-
 <% include partials/footer %>

@@ -1,38 +1,45 @@
 <% include partials/header %>
-<div ng-app="myApp" ng-controller="myCtrl">
-    <h1>TwitFriends</h1>
-    <h3>Quiz</h3>
-    <div ng-hide="gameLive || quizFinished">
-        <p>We managed to find profiles for {{ friend_names.length }} people you follow on twitter who also follow you.
-            Congrats! Now let's find out how well you know them.</p>
-        <button type="submit" ng-click="getWords()">Start Game</button>
-    </div>
-    <div ng-show="gameLive">
-        <p>Question {{ question }} of {{ answers_length }}</p>
-        {{ tweet }}
-        <br>
-        <select ng-model="selectedFriend" ng-options="x for x in friend_names">
-        </select>
-        <!-- when button is clicked getWords is called from controller -->
-        <button type=submit ng-click="getWords()">Answer</button>
-        <br><br>
-        <p>Your score: {{ score }}</p>
-    </div>
-    <div ng-show="quizFinished">
-        <h1>Results</h1>
-        <p>The results are in! Here's how you did:</p>
-        <h2>{{ score }} out of {{ answers_length }}</h2>
-        <!-- calculate percentage and round to 0 decimal places -->
-        <h3>{{ score / answers_length * 100 | number:0 }}%</h3>
-        <p>How do you feel about your results? Why not tell your friends on Twitter about how well you know them!</p>
-    </div>
+<div class=wrapper>
+    <div class="container bg-content" ng-app="myApp" ng-controller="myCtrl">
+        <div class="bg-title">
+            <h1>TwitFriends</h1>
+            <h3>Quiz</h3>
+        </div>
+        <div class="container-padded">
+            <div ng-hide="gameLive || quizFinished">
+                <p>We managed to find profiles for {{ friend_names.length }} people you follow on twitter who also follow you.
+                    Congrats! Now let's find out how well you know them.</p>
+                <button type="submit" class="btn btn-customised btn-lg" ng-click="getWords()">Start Game</button>
+            </div>
+            <div ng-show="gameLive">
+                <p>Question {{ question }} of {{ answers_length }}</p>
+                <hr>
+                <h4 class="tweet-text">{{ tweet }}</h4>
+                <hr>
+                <md-radio-group ng-model="selected">
+                    <md-radio-button ng-repeat="friend in answerList" ng-value="friend" aria-label="{{ friend }}">
+                        {{ friend }}
+                    </md-radio-button>
+                </md-radio-group>
+                <!-- when button is clicked getWords is called from controller -->
+                <button type=submit class="btn btn-customised btn-lg" ng-click="getWords()">Answer</button>
+                <br><br>
+                <p>Your score: {{ score }}</p>
+            </div>
+            <div ng-show="quizFinished">
+                <h1>Results</h1>
+                <p>The results are in! Here's how you did:</p>
+                <!-- calculate percentage and round to 0 decimal places -->
+                <h2>{{ score / answers_length * 100 | number:0 }}%</h2>
+                <h3>{{ score }} out of {{ answers_length }}</h3>
+                <p>How do you feel about your results? Why not tell your friends on Twitter about how well you know them!</p>
+            </div>
+        </div>
+        </div>
 </div>
 
 <script>
-    var app = angular.module("myApp", []);
-
     app.controller("myCtrl", function($scope, $http) {
-
         $scope.playerHandle = <%-JSON.stringify(player_handle)%>
         $scope.question = 0
 
@@ -48,21 +55,22 @@
         $scope.gameLive = false
 
         $scope.getWords = function() {
+            $scope.gameLive = true;
+            // check if answer to prev question is correct
+            if($scope.selected == $scope.answers[$scope.question] && $scope.question > 0){
+                $scope.score++;
+            }
             // check to see if all question answered
             if($scope.question == $scope.answers_length){
                 $scope.gameLive = false;
-                console.log("quiz finished");
                 $scope.quizFinished = true;
             } else {
-                $scope.gameLive = true;
-                if($scope.selectedFriend == $scope.answers[$scope.question] && $scope.question > 0){
-                    $scope.score++;
-                }
                 // ajax request to make twit api call for friend
                 $http.get("/question", {params: {id: $scope.answers[$scope.question+1]}})
                         .then(function(response) {
                             $scope.tweet = response.data;
-                            console.log($scope.tweet)
+                            // get multiple choice list
+                            $scope.answerList = getAnswerList($scope.answers)
                             // increment the question number
                             $scope.question++
                         });
@@ -94,6 +102,23 @@
             console.log(answers)
             return answers
         }
-    });
+
+        function getAnswerList(){
+            var answerList = [$scope.answers[$scope.question+1]]
+            var possibleWrongAnswers = $scope.friend_names.slice()
+            // remove the correct answer from list of possible wrong answers
+            possibleWrongAnswers.splice(possibleWrongAnswers.indexOf($scope.answers[$scope.question+1]), 1)
+            // add 3 random wrong answers to answerList
+            for(var i = 0; i < 3; i++){
+                var randomWrongAns = Math.floor(Math.random() * possibleWrongAnswers.length)
+                answerList.push(possibleWrongAnswers[randomWrongAns])
+                // remove the used wrong answer from list of possible wrong answers
+                possibleWrongAnswers.splice(randomWrongAns, 1)
+            }
+            // alphabetise answerList
+            answerList.sort()
+            return answerList
+        }
+    })
 </script>
 <% include partials/footer %>

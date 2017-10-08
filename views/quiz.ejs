@@ -2,79 +2,163 @@
 <div class=wrapper>
     <div class="container bg-content" ng-app="myApp" ng-controller="myCtrl">
         <div class="bg-title">
-            <h1>TwitFriends</h1>
-            <h3>Quiz</h3>
+            <h2 class="responsive-medium-header">Quiz</h2>
         </div>
         <div class="container-padded">
-            <div ng-hide="gameLive || quizFinished">
+            <div ng-show="errors" ng-cloak>
+                <p>{{ error }}</p>
+                <form class="form-inline" action="/quiz" method="get">
+                    <input type="search" class="form-control input-lg" placeholder="Enter your Twitter handle" name="playerHandle" >
+                    <button type=submit class="btn btn-customised btn-lg">Start quiz</button>
+                </form>
+            </div>
+            <div ng-show="showWelcome()" ng-cloak>
+                <% if(player_handle){ %>
+                    <h1>Welcome, {{ playerHandle }} %></h1>
+                <% } %>
                 <p>We managed to find profiles for {{ friend_names.length }} people you follow on twitter who also follow you.
                     Congrats! Now let's find out how well you know them.</p>
-                <button type="submit" class="btn btn-customised btn-lg" ng-click="getWords()">Start Game</button>
+                <button type="submit" class="btn btn-customised btn-lg" ng-click="getTweet()">Start Game</button>
             </div>
-            <div ng-show="gameLive">
+            <div ng-show="gameLive" ng-cloak>
                 <p>Question {{ question }} of {{ answers_length }}</p>
+                <p>Tweet:</p>
                 <hr>
-                <h4 class="tweet-text">{{ tweet }}</h4>
+                <h4 class="tweet-text" ng-bind-html="tweet.full_text"></h4>
                 <hr>
-                <md-radio-group ng-model="selected">
+                <p>Who tweeted it?</p>
+                <md-radio-group ng-model="selected" ng-cloak>
                     <md-radio-button ng-repeat="friend in answerList" ng-value="friend" aria-label="{{ friend }}">
                         {{ friend }}
                     </md-radio-button>
                 </md-radio-group>
-                <!-- when button is clicked getWords is called from controller -->
-                <button type=submit class="btn btn-customised btn-lg" ng-click="getWords()">Answer</button>
+                <select class="select-lg" ng-model="selectedLifeline" ng-options="option for option in lifelines" ng-show="lifelines.length > 0">
+                </select>
+                <button type="submit" class="btn btn-customised btn-xs" ng-model="selectedLifeline" ng-click="getLifeline()" ng-disabled="lifelines.length == 0">Use lifeline</button>
+                <br>
+                <div>
+                    <div ng-show="activeLifeline">
+                        <br>
+                        <p ng-hide="lifeline ==''">Here is the user's {{ activeLifeline.toLowerCase() }}:</p>
+                        <p ng-hide="activeLifeline == 'Avatar'">{{ lifeline }}</p>
+                        <img ng-show="activeLifeline == 'Avatar'" ng-src="{{ lifeline }}"/>
+                        <p ng-show="lifeline ==''">This user's profile does not include a {{ activeLifeline.toLowerCase() }}.</p>
+                    </div>
+                </div>
+                <br>
+                <!-- when button is clicked getTweet is called from controller -->
+                <button type=submit class="btn btn-customised btn-lg" ng-click="getTweet()">Answer</button>
                 <br><br>
                 <p>Your score: {{ score }}</p>
             </div>
-            <div ng-show="quizFinished">
+            <div ng-show="quizFinished" ng-cloak>
                 <h1>Results</h1>
                 <p>The results are in! Here's how you did:</p>
-                <!-- calculate percentage and round to 0 decimal places -->
-                <h2>{{ score / answers_length * 100 | number:0 }}%</h2>
+                <h2>{{ scorePercentage }}%</h2>
                 <h3>{{ score }} out of {{ answers_length }}</h3>
                 <p>How do you feel about your results? Why not tell your friends on Twitter about how well you know them!</p>
+                <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-size="large"
+                   data-text="I just scored {{ scorePercentage }} on the #TwitFriends quiz!">Tweet</a>
+                <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
             </div>
         </div>
-        </div>
+    </div>
 </div>
 
+<script>window.twttr = (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0],
+                t = window.twttr || {};
+        if (d.getElementById(id)) return t;
+        js = d.createElement(s);
+        js.id = id;
+        js.src = "https://platform.twitter.com/widgets.js";
+        fjs.parentNode.insertBefore(js, fjs);
+
+        t._e = [];
+        t.ready = function(f) {
+            t._e.push(f);
+        };
+
+        return t;
+    }(document, "script", "twitter-wjs"));
+</script>
 <script>
     app.controller("myCtrl", function($scope, $http) {
         $scope.playerHandle = <%-JSON.stringify(player_handle)%>
         $scope.question = 0
 
-        // fetch player's friends
-        $http.get("/friends", {params: {playerHandle: $scope.playerHandle}})
-                .then(function(response){
-                    $scope.friend_names = response.data;
-                    $scope.answers = generateAnswers($scope.friend_names)
-                    $scope.answers_length = Object.keys($scope.answers).length
-                })
+        if($scope.playerHandle == ""){
+            $scope.errors = true;
+        } else {
+            // fetch player's friends
+            $http.get("/friends", {params: {playerHandle: $scope.playerHandle}})
+                    .then(function(response){
+                        if(response.data[0].code){
+                            $scope.errors = true
+                            $scope.error = response.data[0].message
+                        } else {
+                            $scope.friend_names = response.data;
+                            $scope.answers = generateAnswers($scope.friend_names)
+                            $scope.answers_length = Object.keys($scope.answers).length
+                        }
+                    })
+        }
 
         $scope.score = 0
         $scope.gameLive = false
+        $scope.quizFinished = false
+        $scope.lifelines = ['Description', 'Location', 'Avatar']
 
-        $scope.getWords = function() {
-            $scope.gameLive = true;
-            // check if answer to prev question is correct
-            if($scope.selected == $scope.answers[$scope.question] && $scope.question > 0){
-                $scope.score++;
+        $scope.getTweet = function(){
+            if($scope.selected || $scope.gameLive == false){
+                $scope.gameLive = true;
+                $scope.activeLifeline = false;
+                // check if answer to prev question is correct
+                if($scope.selected == $scope.answers[$scope.question] && $scope.question > 0){
+                    $scope.score++;
+                    $scope.selected = null;
+                }
+                // check to see if all question answered
+                if($scope.question == $scope.answers_length){
+                    $scope.gameLive = false;
+                    $scope.quizFinished = true;
+                    $scope.scorePercentage = Math.round($scope.score / $scope.answers_length * 100)
+                } else {
+                    // ajax request to make twit api call for friend
+                    $http.get("/question", {params: {id: $scope.answers[$scope.question+1]}})
+                            .then(function(response) {
+                                $scope.tweet = response.data;
+                                // get multiple choice list
+                                $scope.answerList = getAnswerList($scope.answers)
+                                // increment the question number
+                                $scope.question++
+                            });
+                }
             }
-            // check to see if all question answered
-            if($scope.question == $scope.answers_length){
-                $scope.gameLive = false;
-                $scope.quizFinished = true;
-            } else {
-                // ajax request to make twit api call for friend
-                $http.get("/question", {params: {id: $scope.answers[$scope.question+1]}})
-                        .then(function(response) {
-                            $scope.tweet = response.data;
-                            // get multiple choice list
-                            $scope.answerList = getAnswerList($scope.answers)
-                            // increment the question number
-                            $scope.question++
-                        });
+
+        }
+
+        $scope.getLifeline = function(){
+            $scope.activeLifeline = $scope.selectedLifeline
+            // return the appropriate lifeline and remove it from the array
+            if($scope.selectedLifeline == "Description"){
+                $scope.lifeline = $scope.tweet.user['description']
+                $scope.lifelines.splice($scope.lifelines.indexOf('Description'), 1)
+            } else if ($scope.selectedLifeline == 'Location'){
+                $scope.lifeline = $scope.tweet.user['location']
+                $scope.lifelines.splice($scope.lifelines.indexOf('Location'), 1)
+            } else if ($scope.selectedLifeline == 'Avatar'){
+                // strip "_normal" from the avatar link to get full-size version
+                $scope.lifeline = $scope.tweet.user['profile_image_url'].replace('_normal', '')
+                $scope.lifelines.splice($scope.lifelines.indexOf('Avatar'), 1)
             }
+        }
+
+        $scope.showWelcome = function(){
+            if($scope.success == true && $scope.gameLive == false && $scope.quizFinished == false){
+                return true
+            }
+            return false
         }
 
         function generateAnswers(friend_names){
@@ -100,6 +184,7 @@
             }
 
             console.log(answers)
+            $scope.success = true
             return answers
         }
 

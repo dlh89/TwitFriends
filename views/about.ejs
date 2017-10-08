@@ -1,0 +1,38 @@
+<% include partials/header %>
+<div class=wrapper>
+    <div class="container bg-content" ng-app="myApp" ng-controller="myCtrl">
+        <div class="bg-title">
+            <h2 class="responsive-medium-header">About</h2>
+        </div>
+        <div class="container-padded">
+            <h2>What is TwitFriends?</h2><br>
+            <p>
+                TwitFriends is a web application which generates a quiz about your Twitter friends. Once you've
+                provided your Twitter username it queries the Twitter API to find your Twitter followers who also
+                follow you. It then selects up to 10 friends at random and retrieves a random tweet by them. You will
+                be given a choice of 4 of your friends for each question and have to select which one you think made
+                the tweet. If you get stuck then you can use one of 3 lifelines to either see their description,
+                location or avatar.
+            </p>
+            <p>
+                Once you've finished the quiz you can see your results and will be able to tweet them out to your
+                followers if you wish. This application does not collect any information about its users and will not
+                post anything to your Twitter without your permission.
+            </p><br>
+            <h2>How does it work?</h2><br>
+            <p>
+                The backend uses the Node.js framework Express and the frontend uses the
+                JavaScript-based web application framework AngularJS. Tweets and Twitter profiles are retrieved using
+                the Twitter REST API.</p> <p>If you would like to report any bugs or to know more about the application
+                then please feel free to <a href="/contact" target="_self">contact me</a>.
+            </p><br>
+            <h2>Why was it created?</h2><br>
+            <p>
+                I developed this web application as a final project for
+                <a href="https://courses.edx.org/courses/course-v1:HarvardX+CS50+X/course/" target="_blank">
+                    Harvard's CS50x course</a>.
+            </p><br>
+        </div>
+    </div>
+</div>
+<% include partials/footer %>

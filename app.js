@@ -30,6 +30,12 @@ app.use('/bs', express.static(__dirname + '/node_modules/bootstrap/')); // redir
 // redirect /scripts to node_modules folder
 app.use('/scripts', express.static(__dirname + '/node_modules/'));
 
+// global vars
+app.use(function(req, res, next){
+    res.locals.player_handle = null;
+    next();
+})
+
 // error handling
 app.use(function (err, req, res, next) {
     //console.error(err.stack)
@@ -48,12 +54,25 @@ app.get('/quiz', function(req, res, next) {
     res.render('quiz', {player_handle: playerHandle});
 });
 
+app.get('/about', function(req, res, next) {
+    res.render('about');
+});
+
+app.get('/contact', function(req, res, next) {
+    res.render('contact');
+});
+
 app.get('/friends', function(req, res, next){
     var playerHandle = req.query.playerHandle;
     // Twit api call to get friends
     T.get('friends/ids', { screen_name: playerHandle }, function (err, data) {
-        var friends = data.ids;
-        cbFollowers(friends)
+        if(data.errors){
+            var errors = data.errors;
+            res.send(errors);
+        } else {
+            var friends = data.ids;
+            cbFollowers(friends)
+        }
     });
 
     // callback function executed once friends are retrieved to get followers and see which are also friends
@@ -106,20 +125,17 @@ app.get('/question', function(req, res, next){
     var params = {
         screen_name: req.query.id,  // handle GET parameter
         count: 999,
-        include_rts: false
+        include_rts: false,
+        tweet_mode: "extended"
     };
     // make twitter api call to get text from most recent status for user
-    T.get('statuses/user_timeline',params, function(err, data) {
+    T.get('statuses/user_timeline', params, function(err, data) {
         var tweetsLength = data.length;
         // choose a random tweet
         var randomTweet = Math.floor(Math.random() * tweetsLength);
-        var tweets = data[randomTweet].text;
+        var tweets = data[randomTweet];
         res.send(tweets)
     });
-});
-
-app.get('/results', function(req, res, next){
-    res.render('results')
 });
 
 app.listen(port, function(){

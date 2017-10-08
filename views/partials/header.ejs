@@ -12,6 +12,7 @@
     <script src="/scripts/angular-animate/angular-animate.min.js"></script>
     <script src="/scripts/angular-aria/angular-aria.min.js"></script>
     <script src="/scripts/angular-material/angular-material.min.js"></script>
+    <script src="/scripts/angular-sanitize/angular-sanitize.min.js"></script>
     <script src="/js/myapp.js"></script>
 
     <title>TwitFriends</title>
@@ -27,13 +28,14 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">TwitFriends</a>
+            <a class="navbar-brand" href="/" target="_self">TwitFriends</a>
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav">
                 <li ng-class="{ active: isActive('/')}"><a href="/" target="_self">Home</a></li>
                 <li ng-class="{ active: isActive('/quiz')}"><a href="/quiz" target="_self">Quiz</a></li>
-                <li ng-class="{ active: isActive('/contact')}"><a href="#" target="_self">Contact</a></li>
+                <li ng-class="{ active: isActive('/about')}"><a href="/about" target="_self">About</a></li>
+                <li ng-class="{ active: isActive('/contact')}"><a href="/contact" target="_self">Contact</a></li>
             </ul>
         </div>
     </div>

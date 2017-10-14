@@ -41,7 +41,7 @@
                         <br>
                         <p ng-hide="lifeline ==''">Here is the user's {{ activeLifeline.toLowerCase() }}:</p>
                         <p ng-hide="activeLifeline == 'Avatar'">{{ lifeline }}</p>
-                        <img ng-show="activeLifeline == 'Avatar'" ng-src="{{ lifeline }}"/>
+                        <img ng-show="activeLifeline == 'Avatar'" ng-src="{{ lifeline }}" class="img-thumbnail"/>
                         <p ng-show="lifeline ==''">This user's profile does not include a {{ activeLifeline.toLowerCase() }}.</p>
                     </div>
                 </div>

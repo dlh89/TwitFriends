@@ -33,7 +33,7 @@ html, body {
 }
 
 .bg-sec {
-    background-color: #d0daf5;
+    background-color: #ebf0ff;
     padding: 80px;
 }
 
@@ -65,6 +65,10 @@ html, body {
 
 .container-padded {
     padding: 35px;
+}
+
+hr.style2 {
+    border-color: rgba(137, 107, 255, 0.25);
 }
 
 @media all and (max-width: 1200px) { /* screen size until 1200px */

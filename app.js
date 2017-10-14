@@ -63,67 +63,52 @@ app.get('/contact', function(req, res, next) {
 });
 
 app.get('/friends', function(req, res, next){
-    var playerHandle = req.query.playerHandle;
-    // Twit api call to get friends
-    T.get('friends/ids', { screen_name: playerHandle }, function (err, data) {
-        if(data.errors){
-            var errors = data.errors;
-            res.send(errors);
-        } else {
-            var friends = data.ids;
-            cbFollowers(friends)
-        }
-    });
+    var params = {
+        screen_name: req.query.playerHandle,
+        count: 200
+    };
 
-    // callback function executed once friends are retrieved to get followers and see which are also friends
-    function cbFollowers(friends){
-        T.get('followers/ids', { screen_name: playerHandle }, function (err, data) {
-            var followers = data.ids;
-            var mutualFollowers = [];
+    var friends = [];
+    var mutuals = [];
 
-            var mutualFollowerCount = 0;
-            followers.forEach(function(follower){
-                if(friends.includes(follower)){
-                    mutualFollowerCount ++;
-                    mutualFollowers.push(follower)
-                }
-            });
-            cbGetNames(mutualFollowers)
-        })
-    }
+    // self invoking function
+    (function() {
+        T.get('friends/list', params, function (err, data, response) {
+            if (data.errors) {
+                console.log(data.errors[0].message);
+                return res.send(data.errors)
+            } else {
+                data.users.forEach(function (user) {
+                    friends.push(user.screen_name)
+                })
+            }
+            // call getFollowers after finding friends
+            getFollowers()
+        });
+    })();
 
-    // go through list of mutual followers and lookup their name from twitter, adding it to friendNames list
-    function cbGetNames(mutualFollowers) {
-        var questionLength = mutualFollowers.length;
-        console.log(questionLength);
-        var friendNames = [];
-        mutualFollowers.forEach(function(mutual){
-            var params = {
-                user_id: mutual,
-                include_entities: false
-            };
-            T.get('users/lookup', params, function (err, data) {
-                // if the user lookup returns no data then this friend cannot be used so decrement the questionsLength
-                if(data[0]){
-                    friendNames.push(data[0].screen_name);
-                } else {
-                    questionLength--
-                }
-
-                // check if forEach has finished
-                if(friendNames.length == questionLength){
-                    friendNames.sort();
-                    res.send(friendNames)
-                }
-            });
-
+    function getFollowers(){
+        T.get('followers/list',params, function(err, data, response) {
+            if(data.errors){
+                console.log(data.errors[0].message);
+                res.send(data.errors)
+            } else {
+                data.users.forEach(function(user){
+                    // if followers are also friends, their profile isn't protected and they've made tweets then add to mutuals
+                    if(friends.includes(user.screen_name) && user.protected == false && user.statuses_count != 0){
+                        mutuals.push(user.screen_name)
+                    }
+                })
+            }
+            console.log(mutuals)
+            res.send(mutuals)
         });
     }
 });
 
 app.get('/question', function(req, res, next){
     var params = {
-        screen_name: req.query.id,  // handle GET parameter
+        id: req.query.id,  // handle GET parameter
         count: 999,
         include_rts: false,
         tweet_mode: "extended"
@@ -137,7 +122,18 @@ app.get('/question', function(req, res, next){
         res.send(tweets)
     });
 });
-
+/*
+app.get('/profile', function(req, res, next){
+    var params = {
+        user_id: req.query.id  // handle GET parameter
+    };
+    // make twitter api call to get text from most recent status for user
+    T.get('users/lookup', params, function(err, data) {
+        var screen_name = data[0].screen_name;
+        res.send(screen_name)
+    });
+});
+ */
 app.listen(port, function(){
     console.log('Server started on port ' + port + '...');
 });

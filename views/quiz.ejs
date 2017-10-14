@@ -57,31 +57,16 @@
                 <h2>{{ scorePercentage }}%</h2>
                 <h3>{{ score }} out of {{ answers_length }}</h3>
                 <p>How do you feel about your results? Why not tell your friends on Twitter about how well you know them!</p>
-                <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-size="large"
-                   data-text="I just scored {{ scorePercentage }} on the #TwitFriends quiz!">Tweet</a>
-                <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+                <a id="shareBtn" class="twitter-share-button"
+                    href=""
+                    target="_blank"
+                    data-size="large">
+                    Tweet</a>
             </div>
         </div>
     </div>
 </div>
 
-<script>window.twttr = (function(d, s, id) {
-        var js, fjs = d.getElementsByTagName(s)[0],
-                t = window.twttr || {};
-        if (d.getElementById(id)) return t;
-        js = d.createElement(s);
-        js.id = id;
-        js.src = "https://platform.twitter.com/widgets.js";
-        fjs.parentNode.insertBefore(js, fjs);
-
-        t._e = [];
-        t.ready = function(f) {
-            t._e.push(f);
-        };
-
-        return t;
-    }(document, "script", "twitter-wjs"));
-</script>
 <script>
     app.controller("myCtrl", function($scope, $http) {
         $scope.playerHandle = <%-JSON.stringify(player_handle)%>
@@ -123,13 +108,16 @@
                     $scope.gameLive = false;
                     $scope.quizFinished = true;
                     $scope.scorePercentage = Math.round($scope.score / $scope.answers_length * 100)
+                    elem = document.getElementById("shareBtn")
+                    elem.setAttribute("href", "https://twitter.com/intent/tweet?text=" +
+                    "I took the TwitFriends quiz and scored " + $scope.scorePercentage + "%25!")
                 } else {
                     // ajax request to make twit api call for friend
                     $http.get("/question", {params: {id: $scope.answers[$scope.question+1]}})
                             .then(function(response) {
                                 $scope.tweet = response.data;
                                 // get multiple choice list
-                                $scope.answerList = getAnswerList($scope.answers)
+                                $scope.answerList = getAnswerList()
                                 // increment the question number
                                 $scope.question++
                             });
@@ -189,20 +177,43 @@
         }
 
         function getAnswerList(){
-            var answerList = [$scope.answers[$scope.question+1]]
+            // create array of answer ids with correct answer
+            var answerScreenNames = [$scope.answers[$scope.question+1]]
+
             var possibleWrongAnswers = $scope.friend_names.slice()
             // remove the correct answer from list of possible wrong answers
             possibleWrongAnswers.splice(possibleWrongAnswers.indexOf($scope.answers[$scope.question+1]), 1)
-            // add 3 random wrong answers to answerList
+            // add 3 random wrong answers to answerScreenNames
             for(var i = 0; i < 3; i++){
                 var randomWrongAns = Math.floor(Math.random() * possibleWrongAnswers.length)
-                answerList.push(possibleWrongAnswers[randomWrongAns])
+                answerScreenNames.push(possibleWrongAnswers[randomWrongAns])
                 // remove the used wrong answer from list of possible wrong answers
-                possibleWrongAnswers.splice(randomWrongAns, 1)
+                possibleWrongAnswers.splice(possibleWrongAnswers.indexOf(possibleWrongAnswers[randomWrongAns]), 1)
+                if(i == 2){
+                    return answerScreenNames
+                }
             }
-            // alphabetise answerList
-            answerList.sort()
-            return answerList
+
+            /*
+            var answerNames = []
+
+            answerIds.forEach(function(answerId){
+                console.log("foreach")
+                $http.get("/profile", {params: {id: answerId}})
+                        .then(function(response){
+                            console.log(response.data)
+                            answerNames.push(response.data)
+                            if(answerNames.length == answerIds.length){
+                                console.log("answerNames: " + answerNames.length)
+                                console.log("answerIds: " + answerIds.length)
+                                console.log("returning answerNames")
+                                // alphabetise answerNames
+                                answerNames.sort()
+                                return answerNames
+                            }
+                        })
+            })
+            */
         }
     })
 </script>

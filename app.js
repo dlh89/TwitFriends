@@ -100,7 +100,6 @@ app.get('/friends', function(req, res, next){
                     }
                 })
             }
-            console.log(mutuals)
             res.send(mutuals)
         });
     }

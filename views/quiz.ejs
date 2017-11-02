@@ -2,9 +2,12 @@
 <div class=wrapper>
     <div class="container bg-content" ng-app="myApp" ng-controller="myCtrl">
         <div class="bg-title">
-            <h2 class="responsive-medium-header">Quiz</h2>
+            <h2 class="responsive-medium-header"><a href="/" target="_self"><img src="images/TwitFriends80px.png"></img></a> Quiz</h2>
         </div>
-        <div class="container-padded">
+        <div class="container-padded" id="game">
+            <div ng-hide="gameLive">
+                <div loading></div>
+            </div>
             <div ng-show="errors" ng-cloak>
                 <p>{{ error }}</p>
                 <form class="form-inline" action="/quiz" method="get">
@@ -24,7 +27,9 @@
                 <p>Question {{ question }} of {{ answers_length }}</p>
                 <p>Tweet:</p>
                 <hr>
-                <h4 class="tweet-text" ng-bind-html="tweet.full_text"></h4>
+                <div loading>
+                    <h4 class="tweet-text" ng-bind-html="tweet.full_text"></h4>
+                </div>
                 <hr>
                 <p>Who tweeted it?</p>
                 <md-radio-group ng-model="selected" ng-cloak>
@@ -57,11 +62,10 @@
                 <h2>{{ scorePercentage }}%</h2>
                 <h3>{{ score }} out of {{ answers_length }}</h3>
                 <p>How do you feel about your results? Why not tell your friends on Twitter about how well you know them!</p>
-                <a id="shareBtn" class="twitter-share-button"
-                    href=""
-                    target="_blank"
-                    data-size="large">
-                    Tweet</a>
+                <a id="shareBtn" class="btn tweet-btn"
+                   href=""
+                   target="_blank"
+                   data-size="large"><img src="images/Twitter_Logo_WhiteOnBlue_small.png"></img>Tweet</a>
             </div>
         </div>
     </div>
@@ -96,13 +100,18 @@
 
         $scope.getTweet = function(){
             if($scope.selected || $scope.gameLive == false){
+                //scroll back to game div using jquery
+                $('html, body').animate({
+                    scrollTop: $("#game").offset().top
+                }, 500);
                 $scope.gameLive = true;
                 $scope.activeLifeline = false;
                 // check if answer to prev question is correct
                 if($scope.selected == $scope.answers[$scope.question] && $scope.question > 0){
                     $scope.score++;
-                    $scope.selected = null;
                 }
+                // deselect the previous answer
+                $scope.selected = null;
                 // check to see if all question answered
                 if($scope.question == $scope.answers_length){
                     $scope.gameLive = false;
@@ -190,31 +199,31 @@
                 // remove the used wrong answer from list of possible wrong answers
                 possibleWrongAnswers.splice(possibleWrongAnswers.indexOf(possibleWrongAnswers[randomWrongAns]), 1)
                 if(i == 2){
+                    answerScreenNames.sort()
                     return answerScreenNames
                 }
             }
-
-            /*
-            var answerNames = []
-
-            answerIds.forEach(function(answerId){
-                console.log("foreach")
-                $http.get("/profile", {params: {id: answerId}})
-                        .then(function(response){
-                            console.log(response.data)
-                            answerNames.push(response.data)
-                            if(answerNames.length == answerIds.length){
-                                console.log("answerNames: " + answerNames.length)
-                                console.log("answerIds: " + answerIds.length)
-                                console.log("returning answerNames")
-                                // alphabetise answerNames
-                                answerNames.sort()
-                                return answerNames
-                            }
-                        })
-            })
-            */
         }
     })
+
+    // loading directive to be shown while ajax requests are pending
+    app.directive("loading", ['$http', function ($http) {
+        return {
+            restrict: 'A',
+            link: function (scope, element, attrs) {
+                scope.isLoading = function () {
+                    return $http.pendingRequests.length > 0;
+                };
+                scope.$watch(scope.isLoading, function (value) {
+                    if (value) {
+                        element.addClass('loader');
+                    } else {
+                        element.removeClass('loader');
+                    }
+                });
+            }
+        };
+    }]);
+
 </script>
 <% include partials/footer %>

@@ -1,33 +1,35 @@
 <% include partials/header %>
-<div class="wrapper">
-    <div class="container-fluid bg-prim text-center">
+<div class="banner">
+    <div class="container">
         <a href="/" target="_self"><img src="images/TwitFriends80px.png"></img></a>
         <h1 class="responsive-large-header">TwitFriends</h1>
         <h3>How well do you really know your Twitter friends?</h3>
         <br>
         <form class="form-inline" action="/quiz" method="get">
-            <input type="search" class="form-control input-lg" placeholder="Enter your Twitter handle" name="playerHandle" >
-            <button type=submit class="btn btn-customised btn-lg">Start quiz</button>
+            <input type="text" placeholder="Enter your Twitter handle" name="playerHandle">
+            <button type=submit class="btn-customised">Start quiz</button>
         </form>
         <br><br>
     </div>
-    <div class="container-fluid bg-sec text-center">
-        <div class="container">
-            <h2 class="responsive-medium-header">Enter your Twitter handle and test your knowledge of your friends with a unique, randomly generated quiz.</h2>
-            <hr>
-            <h4 class="responsive-small-header">
-                We'll show you tweets from your Twitter friends and it's your job to tell us who wrote them. If you get
-                stuck then you can use one of three lifelines to get some extra information about the person who sent the
-                tweet. Use them wisely!
-            </h4>
-            <br><br><br>
-            <h2 class="responsive-medium-header">Tell your friends!</h2>
-            <hr>
-            <h4>
-                Once you've completed the quiz you can let your friends know how well you did.
-            </h4>
-            <br><br>
-        </div>
+</div>
+<div class="features">
+    <div class="container">
+        <h2 class="responsive-medium-header">Enter your Twitter handle and test your knowledge of your friends with
+            a unique, randomly generated quiz.</h2>
+        <hr class="fade">
+        <h4 class="responsive-small-header">
+            We'll show you tweets from your Twitter friends and it's your job to tell us who wrote them. If you get
+            stuck then you can use one of three lifelines to get some extra information about the person who sent
+            the tweet. Use them wisely!
+        </h4>
+        <br><br><br>
+        <h2 class="responsive-medium-header">Tell your friends!</h2>
+        <hr class="fade">
+        <h4>
+            Once you've completed the quiz you can let your friends know how well you did by clicking the tweet
+            button.
+        </h4>
+        <br><br>
     </div>
 </div>
 <% include partials/footer %>

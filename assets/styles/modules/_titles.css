@@ -1,0 +1,37 @@
+.responsive-large-header {
+  font-size: 100px;
+  font-weight: 600;
+  margin-top: 20px;
+}
+
+.responsive-medium-header {
+  font-size: 40px;
+  font-weight: 600;
+}
+
+@media all and (max-width: 1200px) { /* screen size until 1200px */
+  .responsive-large-header {
+      font-size: 100px;
+  }
+  .responsive-medium-header {
+      font-size: 40px;
+  }
+}
+
+@media all and (max-width: 1000px) { /* screen size until 1000px */
+  .responsive-large-header {
+      font-size: 83px;
+  }
+  .responsive-medium-header {
+      font-size: 33px;
+  }
+}
+
+@media all and (max-width: 500px) { /* screen size until 500px */
+    .responsive-large-header {
+        font-size: 48px;
+    }
+    .responsive-medium-header {
+        font-size: 22px;
+    }
+}

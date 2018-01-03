@@ -1,0 +1,9 @@
+.footer {
+  background-color: $offBlack;
+  color: white;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  text-align: center;
+  padding: 60px;
+}

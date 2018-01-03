@@ -1,7 +1,7 @@
 <% include partials/header %>
-<div class=wrapper>
-    <div class="container bg-content" ng-app="myApp" ng-controller="myCtrl">
-        <div class="bg-title">
+<div class="wrapper">
+    <div class="bg-content" ng-app="myApp" ng-controller="myCtrl">
+        <div class="gradient bg-title">
             <h2 class="responsive-medium-header"><a href="/" target="_self"><img src="images/TwitFriends80px.png"></img></a> Quiz</h2>
         </div>
         <div class="container-padded" id="game">
@@ -11,8 +11,8 @@
             <div ng-show="errors" ng-cloak>
                 <p>{{ error }}</p>
                 <form class="form-inline" action="/quiz" method="get">
-                    <input type="search" class="form-control input-lg" placeholder="Enter your Twitter handle" name="playerHandle" >
-                    <button type=submit class="btn btn-customised btn-lg">Start quiz</button>
+                    <input type="text" placeholder="Enter your Twitter handle" name="playerHandle" >
+                    <button type=submit class="btn-customised">Start quiz</button>
                 </form>
             </div>
             <div ng-show="showWelcome()" ng-cloak>
@@ -21,25 +21,25 @@
                 <% } %>
                 <p>We managed to find profiles for {{ friend_names.length }} people you follow on twitter who also follow you.
                     Congrats! Now let's find out how well you know them.</p>
-                <button type="submit" class="btn btn-customised btn-lg" ng-click="getTweet()">Start Game</button>
+                <button type="submit" class="btn-customised" ng-click="getTweet()">Start Game</button>
             </div>
             <div ng-show="gameLive" ng-cloak>
                 <p>Question {{ question }} of {{ answers_length }}</p>
                 <p>Tweet:</p>
-                <hr>
+                <hr class="fade">
                 <div loading>
                     <h4 class="tweet-text" ng-bind-html="tweet.full_text"></h4>
                 </div>
-                <hr>
+                <hr class="fade">
                 <p>Who tweeted it?</p>
                 <md-radio-group ng-model="selected" ng-cloak>
                     <md-radio-button ng-repeat="friend in answerList" ng-value="friend" aria-label="{{ friend }}">
                         {{ friend }}
                     </md-radio-button>
                 </md-radio-group>
-                <select class="select-lg" ng-model="selectedLifeline" ng-options="option for option in lifelines" ng-show="lifelines.length > 0">
+                <select class="select-rounded" ng-model="selectedLifeline" ng-options="option for option in lifelines" ng-show="lifelines.length > 0">
                 </select>
-                <button type="submit" class="btn btn-customised btn-xs" ng-model="selectedLifeline" ng-click="getLifeline()" ng-disabled="lifelines.length == 0">Use lifeline</button>
+                <button type="submit" class="btn-customised btn-small" ng-model="selectedLifeline" ng-click="getLifeline()" ng-disabled="lifelines.length == 0">Use lifeline</button>
                 <br>
                 <div>
                     <div ng-show="activeLifeline">
@@ -52,7 +52,7 @@
                 </div>
                 <br>
                 <!-- when button is clicked getTweet is called from controller -->
-                <button type=submit class="btn btn-customised btn-lg" ng-click="getTweet()">Answer</button>
+                <button type=submit class="btn-customised" ng-click="getTweet()">Answer</button>
                 <br><br>
                 <p>Your score: {{ score }}</p>
             </div>
@@ -62,10 +62,10 @@
                 <h2>{{ scorePercentage }}%</h2>
                 <h3>{{ score }} out of {{ answers_length }}</h3>
                 <p>How do you feel about your results? Why not tell your friends on Twitter about how well you know them!</p>
-                <a id="shareBtn" class="btn tweet-btn"
-                   href=""
-                   target="_blank"
-                   data-size="large"><img src="images/Twitter_Logo_WhiteOnBlue_small.png"></img>Tweet</a>
+                <button class="tweet-btn"><a id="shareBtn" class="tweet-btn tweet-link"
+                                             href=""
+                                             target="_blank"
+                                             data-size="large"><img src="images/Twitter_Logo_WhiteOnBlue_small.png"></img>Tweet</a></button>
             </div>
         </div>
     </div>

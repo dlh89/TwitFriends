@@ -1,0 +1,44 @@
+@import "normalize.css";
+@import "base/_variables";
+@import "base/_mixins";
+@import "base/_global";
+@import "modules/_heading";
+@import "modules/_container";
+@import "modules/_footer";
+@import "modules/_banner";
+@import "modules/_features";
+@import "modules/_btn";
+@import "modules/_input";
+@import "modules/_titles";
+@import "modules/_tweet";
+@import "modules/_wrapper";
+@import "modules/_navbar";
+@import "modules/_loader";
+@import "modules/_fade";
+
+h1 {
+    margin: 0px;
+}
+
+.bg-prim {
+    padding-top: 120px;
+    padding-bottom: 120px;
+}
+
+.bg-sec {
+    background-color: #f7f9ff;
+    padding: 80px;
+}
+
+.bg-title {
+    padding: 60px;
+}
+
+.bg-content {
+    background-color: white;
+    min-height: calc(100vh - 120px);
+}
+
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+    display: none !important;
+}

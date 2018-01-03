@@ -1,0 +1,27 @@
+.tweet-btn {
+  color: white;
+  background-color: #1da1f2;
+  padding: 2px 4px 2px 1px;
+  border: 1px solid #1da1f2;
+  border-radius: 4px;
+}
+
+.btn-customised {
+  font-size: 16px;
+  color: #fef1ff;
+  background-color: $darkPurple;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  transition-duration: 0.2s;
+}
+
+.btn-customised:hover {
+  border: 1px solid $brightPink;
+}
+
+.btn-small {
+  padding: 2px 4px 2px 4px;
+  font-size: 12px;
+}
+

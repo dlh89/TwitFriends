@@ -1,0 +1,26 @@
+.tweet-text {
+  font-size: 38px;
+  font-weight: 500;
+}
+
+.tweet-link:hover,
+.tweet-link:focus {
+    color: white;
+    text-decoration: none;
+}
+
+@media all and (max-width: 1200px) { /* screen size until 1200px */
+  .tweet-text {
+      font-size: 38px;
+  }
+}
+@media all and (max-width: 1000px) { /* screen size until 1000px */
+  .tweet-text {
+      font-size: 32px;
+  }
+}
+@media all and (max-width: 500px) { /* screen size until 500px */
+  .tweet-text {
+      font-size: 21px;
+  }
+}

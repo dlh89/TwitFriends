@@ -93,3 +93,7 @@
 .nav-titles a {
   padding: 1.3rem;
 }
+
+.active {
+  background: #111;
+}

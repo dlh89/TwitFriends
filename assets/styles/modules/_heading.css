@@ -1,8 +1,15 @@
 .gradient {
     background: $mainPurple; /* For browsers that do not support gradients */
-    background: -webkit-linear-gradient(left, $gradientPurpleA, $gradientPurpleB); /* For Safari 5.1 to 6.0 */
-    background: -o-linear-gradient(right, $gradientPurpleA, $gradientPurpleB); /* For Opera 11.1 to 12.0 */
-    background: -moz-linear-gradient(right, $gradientPurpleA, $gradientPurpleB); /* For Firefox 3.6 to 15 */
-    background: linear-gradient(to right, $gradientPurpleA, $gradientPurpleB); /* Standard syntax (must be last) */
+    background: -webkit-linear-gradient(left, $gradientPurpleA, $gradientPurpleC); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(right, $gradientPurpleA, $gradientPurpleC); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(right, $gradientPurpleA, $gradientPurpleC); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(to right, $gradientPurpleA, $gradientPurpleC); /* Standard syntax (must be last) */
     color: white;
+
+    @mixin atMedium {
+        background: -webkit-linear-gradient(left, $gradientPurpleA, $gradientPurpleB); /* For Safari 5.1 to 6.0 */
+        background: -o-linear-gradient(right, $gradientPurpleA, $gradientPurpleB); /* For Opera 11.1 to 12.0 */
+        background: -moz-linear-gradient(right, $gradientPurpleA, $gradientPurpleB); /* For Firefox 3.6 to 15 */
+        background: linear-gradient(to right, $gradientPurpleA, $gradientPurpleB); /* Standard syntax (must be last) */
+    }
 }

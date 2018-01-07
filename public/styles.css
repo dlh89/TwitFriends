@@ -460,16 +460,16 @@ body p {
 
 .gradient {
     background: #7b68ee; /* For browsers that do not support gradients */ /* For Safari 5.1 to 6.0 */ /* For Opera 11.1 to 12.0 */ /* For Firefox 3.6 to 15 */
-    background: -webkit-gradient(linear, left top, right top, from(#a07aff), to(#6758c5));
-    background: linear-gradient(to right, #a07aff, #6758c5); /* Standard syntax (must be last) */
+    background: -webkit-gradient(linear, left top, right top, from(#7F4DFF), to(#4d3f9e));
+    background: linear-gradient(to right, #7F4DFF, #4d3f9e); /* Standard syntax (must be last) */
     color: white;
 }
 
 @media (min-width: 800px) {
 
 .gradient { /* For Safari 5.1 to 6.0 */ /* For Opera 11.1 to 12.0 */ /* For Firefox 3.6 to 15 */
-        background: -webkit-gradient(linear, left top, right top, from(#a07aff), to(#53539c));
-        background: linear-gradient(to right, #a07aff, #53539c) /* Standard syntax (must be last) */
+        background: -webkit-gradient(linear, left top, right top, from(#7F4DFF), to(#53539c));
+        background: linear-gradient(to right, #7F4DFF, #53539c) /* Standard syntax (must be last) */
 }
   }
 
@@ -532,9 +532,11 @@ body p {
 .tweet-btn {
   color: white;
   background-color: #1da1f2;
-  padding: 2px 4px 2px 1px;
+  padding: 5px 5px 5px 15px;
   border: 1px solid #1da1f2;
   border-radius: 4px;
+  position: relative;
+  text-decoration: none;
 }
 
 .btn-customised {
@@ -555,6 +557,13 @@ body p {
 .btn-small {
   padding: 2px 4px 2px 4px;
   font-size: 12px;
+}
+
+.twitter-logo {
+  position: absolute;
+  top: 50%;
+  -webkit-transform: translate(-100%, -50%);
+          transform: translate(-100%, -50%);
 }
 
 input[type=text] {

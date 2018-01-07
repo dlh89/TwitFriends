@@ -4,7 +4,7 @@
   "description": "A web application which generates quizzes based on twitter user's friends",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js"
   },
   "author": "David Hide",
   "license": "ISC",

@@ -7,7 +7,7 @@ var Twit = require('twit');
 var config = require(path.join(__dirname, 'config'));
 var T = new Twit(config);
 
-var port = 3000;
+var port = process.env.PORT || 3000;
 
 var app = express();
 

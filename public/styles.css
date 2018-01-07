@@ -660,17 +660,29 @@ input[type=text]:focus {
 }
 
 .navbar {
-  display: none;
+  position: relative;
+  width: 100%;
+  -webkit-transition: all ease-out .5s;
+  transition: all ease-out .5s;
+  -webkit-transform: translateY(-214px);
+          transform: translateY(-214px);
+  height: 1px;
 }
 
 .navbar--is-expanded {
-    display: block;
+    -webkit-transform: translateY(0%);
+            transform: translateY(0%);
+    height: 214px;
   }
 
 @media (min-width: 800px) {
 
 .navbar {
-    display: block
+    position: relative;
+    height: 53px;
+    margin-bottom: 0;
+    transform: translateY(0%);
+    -webkit-transform: translateX(0%)
 }
   }
 

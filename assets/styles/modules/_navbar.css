@@ -1,12 +1,21 @@
 .navbar {
-  display: none;
+  position: relative;
+  width: 100%;
+  transition: all ease-out .5s;
+  transform: translateY(-214px);
+  height: 1px;
 
   &--is-expanded {
-    display: block;
+    transform: translateY(0%);
+    height: 214px;
   }
 
   @mixin atMedium {
-    display: block;
+    position: relative;
+    height: 53px;
+    margin-bottom: 0;
+    transform: translateY(0%);
+    -webkit-transform: translateX(0%);
   }
 }
 

@@ -822,6 +822,10 @@ input[type=text]:focus {
   border-top: none;
 }
 
+.logo {
+  vertical-align: middle;
+}
+
 h1 {
     margin: 0px;
 }

@@ -10,6 +10,7 @@ var config = {
     access_token:         'process.env.access_token',
     access_token_secret:  'process.env.access_token_secret',
 };
+console.log(config.consumer_key);
 var T = new Twit(config);
 
 var port = process.env.PORT || 3000;

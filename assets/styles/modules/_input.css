@@ -1,6 +1,5 @@
-input[type=text] {
+.large-input {
   font-size: 16px;
-  max-width:500px;
   margin: auto;
   padding: 10px;
   margin: 8px 0;
@@ -10,10 +9,27 @@ input[type=text] {
   -webkit-transition: 0.5s;
   transition: 0.5s;
   outline: none;
-  background: $mainPurple;
-  color: #FFF;
+  max-width: 200px;
+
+  &--purple {
+    background: $mainPurple;
+    color: #FFF;
+  }
 }
 
-input[type=text]:focus {
+.large-input:focus {
   border: 1px solid #FF58F2;
+}
+
+.large-input--purple::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  color: #c7c7c7;
+}
+.large-input--purple::-moz-placeholder { /* Firefox 19+ */
+  color: #c7c7c7;
+}
+.large-input--purple:-ms-input-placeholder { /* IE 10+ */
+  color: #c7c7c7;
+}
+.large-input--purple:-moz-placeholder { /* Firefox 18- */
+  color: #c7c7c7;
 }

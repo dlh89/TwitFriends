@@ -1,21 +1,21 @@
 .navbar {
-  position: relative;
+  position: absolute;
   width: 100%;
   transition: all ease-out .5s;
-  transform: translateY(-214px);
-  height: 1px;
+  transform: translateY(-213px);
+  background: rgba(56, 56, 56, .9);
 
   &--is-expanded {
     transform: translateY(0%);
-    height: 214px;
+    
   }
 
   @mixin atMedium {
     position: relative;
-    height: 53px;
     margin-bottom: 0;
     transform: translateY(0%);
     -webkit-transform: translateX(0%);
+    background: $offBlack;
   }
 }
 
@@ -24,7 +24,6 @@
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background: $offBlack;
   width: 100%;
 }
 

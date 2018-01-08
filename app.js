@@ -4,13 +4,14 @@ var path = require('path');
 var ejs = require('ejs');
 var Twit = require('twit');
 
-var config = {
+// use environment variables if they exist, otherwise use config file
+var config = process.env.consumer_key ? {
     consumer_key:         process.env.consumer_key,
     consumer_secret:      process.env.consumer_secret,
     access_token:         process.env.access_token,
     access_token_secret:  process.env.access_token_secret
-};
-console.log(config.consumer_key);
+} : require('./config');
+
 var T = new Twit(config);
 
 var port = process.env.PORT || 3000;

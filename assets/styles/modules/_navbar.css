@@ -47,8 +47,8 @@
   width: 28px;
   height: 27px;
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 13px;
+  right: 13px;
 
   &::before {
       content: "";

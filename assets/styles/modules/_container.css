@@ -23,5 +23,9 @@
 }
 
 .container-padded {
-  padding: 3rem;
+  padding: 1.5rem;
+
+  @mixin atMedium {
+    padding: 3rem;
+  }
 }

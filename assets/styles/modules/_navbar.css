@@ -44,28 +44,28 @@
 }
 
 .burger-icon {
-  width: 20px;
-  height: 19px;
+  width: 28px;
+  height: 27px;
   position: absolute;
-  top: 15px;
-  right: 15px;
+  top: 20px;
+  right: 20px;
 
   &::before {
       content: "";
       position: absolute;
       top: 0;
       left: 0;
-      width: 20px;
-      height: 3px;
+      width: 28px;
+      height: 5px;
       background-color: #FFF;
   }
 
   &__middle {
        position: absolute;
-       top: 8px;
+       top: 11px;
        left: 0;
-       width: 20px;
-       height: 3px;
+       width: 28px;
+       height: 5px;
        background-color: #FFF;
    }
 
@@ -74,8 +74,8 @@
        position: absolute;
        bottom: 0;
        left: 0;
-       width: 20px;
-       height: 3px;
+       width: 28px;
+       height: 5px;
        background-color: #FFF;
    }
 
